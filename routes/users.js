@@ -4,9 +4,9 @@ var Category = require('../schemas/category');
 var Diary = require('../schemas/diary');
 var router = express.Router();
 
-router.get('/', async (req, res, next) => {
-    const userId = req.query.id;
-    const bounds = req.query.bounds;
+router.post('/login', async (req, res, next) => {
+    const userId = req.body.id;
+    const bounds = req.body.bounds;
     try {
         const user = await User.findOne({ id: userId });
         if (user) {
@@ -19,7 +19,9 @@ router.get('/', async (req, res, next) => {
                 placeLng: { $lte: bounds.neLng, $gte: bounds.swLng }
             }).sort({category: 1, createdAt: -1});
             res.status(200).json({category: categories, diary: diaries});
-        }    
+        } else {
+            res.redirect(307, '/');
+        }
     } catch(err) {
         console.error(err);
         next(err);

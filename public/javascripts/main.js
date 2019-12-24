@@ -201,8 +201,8 @@
             endSearchMode();
         }
         function login() {
-            $.get({
-                url: '/users',
+            $.post({
+                url: '/users/login',
                 data: {
                     id: $('#user-id').val(),
                     bounds: getCurrBounds(map)
