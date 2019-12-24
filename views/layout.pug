@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    title Note & Map
+    link(rel="stylesheet" href="/lib/jquery-ui-dist/jquery-ui.min.css")
+    //- link(rel="stylesheet" href="/lib/leaflet/dist/leaflet.css")
+    link(rel="stylesheet", href="/stylesheets/style.css")
+    link(rel="stylesheet", href="/stylesheets/note.css")
+    style(type="text/css" name="css-category")
+  body(onselectstart="return false")
+    block content
+    div(style="position: absolute; bottom: 2px; right: 5px; z-index: 1; color: black;") Icons made by
+      a(href="https://www.flaticon.com/authors/freepik" target="_blank" title="Freepik") Freepik
+      |  from 
+      a(href="https://www.flaticon.com/" target="_blank" title="Flaticon") www.flaticon.com
+    script(type="text/javascript" src=`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.KAKAO_SCRIPT_KEY}&libraries=services`)
+    script(type="text/javascript" src="/lib/jquery/dist/jquery.min.js")
+    script(type="text/javascript" src="/lib/jquery-ui-dist/jquery-ui.js")
+    //- script(type="text/javascript" src="/lib/leaflet/dist/leaflet.js")
+    
+    script(type="text/javascript" src="/js/note.js")
+    script(type="text/javascript" src="/js/diary.js")
+    script(type="text/javascript" src="/js/schedule.js")
+    script(type="text/javascript" src="/js/main.js")

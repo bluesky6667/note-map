@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  div(id="map-container")
+  div(class="menu-container")
+    div(class="menu-box")
+      button(id="login" class="icon-login")
+      input(type="text" id="user-id" class="disabled-input" maxlength="12" placeholder="최대 12자" value="customer" readonly)
+      button(id="diary" class="icon-diary" title="메모")
+      button(id="calendar" class="icon-calendar" title="일정 관리")
+      button(id="map" class="icon-map" title="지도")
+    div(class="menu-box search-box")
+      input(type="search" id="keyword" placeholder="장소 검색")
+      button(id="search" class="icon-search")
+    div(class="menu-box temp-box")
+      button(class="cancel-search") 장소 검색 중...
+        span(class="icon-cancel")
+  div(class="legend-box")
+    //- button(id="add-legend" class="icon-add add-btn")

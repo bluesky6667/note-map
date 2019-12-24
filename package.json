@@ -1,0 +1,29 @@
+{
+  "name": "diary",
+  "version": "0.0.1",
+  "description": "personal diary with map",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "author": "ISKang",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^5.0.1",
+    "express": "~4.16.1",
+    "express-session": "^1.15.6",
+    "http-errors": "~1.6.3",
+    "jquery": "^3.4.1",
+    "jquery-ui-dist": "^1.12.1",
+    "mongoose": "^5.0.11",
+    "morgan": "~1.9.1",
+    "pug": "^2.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.1"
+  }
+}
