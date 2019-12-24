@@ -35,8 +35,8 @@ app.use(session({
     saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,
     cookie: {
-        httpOnly: true, // 배포시 false
-        secure: false,  // 배포시 true
+        httpOnly: true, // change false when it is deployed
+        secure: false,  // change true when it is deployed
     },
 }));
 app.use(flash());
