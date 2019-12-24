@@ -1,0 +1,2 @@
+# note-map
+simple diary
