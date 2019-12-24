@@ -20,7 +20,7 @@ router.post('/login', async (req, res, next) => {
             }).sort({category: 1, createdAt: -1});
             res.status(200).json({category: categories, diary: diaries});
         } else {
-            res.redirect(307, '/');
+            res.redirect(307, '/users');
         }
     } catch(err) {
         console.error(err);
