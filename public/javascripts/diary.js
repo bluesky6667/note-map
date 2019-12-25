@@ -51,7 +51,7 @@
             this.$note.resizable('option', 'resize', this.resizeFn);
             this.$note.on('click', '.remove-place', function(e) {
                 if (confirm('정말 삭제하시겠습니까?')) {
-                    _this.setPlace({});
+                    _this.setPlace();
                 }
             });
         }
@@ -532,7 +532,7 @@
                 }
                 $('#map-container').off('click', `.marker-diary[data-diary-id=${diary._id}]`);
                 $('#map-container').on('click', `.marker-diary[data-diary-id=${diary._id}]`, function(e) {
-                    new Diary({diaryId: this.dataset.diaryId, diaryList: _this.diaryList, map: _this.map});
+                    new Diary({diaryId: this.dataset.diaryId, diaryList: _this, map: _this.map});
                 });
             }        
         }

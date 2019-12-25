@@ -235,6 +235,12 @@
                     _this.deleteSched($calendar.find('input[name=schedId]').val());
                 }                
             });
+            $calendar.on('click', '.remove-place', function(e) {
+                e.stopPropagation();
+                if (confirm('정말 삭제하시겠습니까?')) {
+                    _this.setPlace();
+                }                
+            });
         }
         buildCalendar(scheds, schedDate) {
             const date = this.calendarDate;
