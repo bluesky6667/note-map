@@ -1,4 +1,3 @@
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
@@ -8,6 +7,8 @@ const flash = require('connect-flash');
 const helmet = require('helmet');
 const hpp = require('hpp');
 const RedisStore = require('connect-redis')(session);
+const redis = require('redis');
+
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
@@ -24,7 +25,7 @@ connect();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.set('port', process.env.PORT || 8015);
+app.set('port', process.env.PORT || 8080);
 
 if ( process.env.NODE_ENV === 'production' ) {
     app.use(morgan('combined'));
@@ -39,6 +40,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
+const redisClient = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
+redisClient.auth(process.env.REDIS_PASSWORD, err => {
+    if (err) logger.error('redis connect err ', err);
+});
 const sessionOption = {
     resave: false,
     saveUninitialized: false,
@@ -48,6 +53,8 @@ const sessionOption = {
         secure: false,
     },
     store: new RedisStore({
+        client: redisClient,
+        no_ready_check: true,
         host: process.env.REDIS_HOST,
         port: process.env.REDIS_PORT,
         pass: process.env.REDIS_PASSWORD,
@@ -55,8 +62,8 @@ const sessionOption = {
     })
 }
 if (process.env.NODE_ENV === 'production') {
-    sessionOption.proxy = true;
-    sessionOption.cookie.secure = true;
+    sessionOption.proxy = false;
+    sessionOption.cookie.secure = false;
 }
 app.use(session(sessionOption));
 app.use(flash());

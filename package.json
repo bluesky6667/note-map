@@ -4,7 +4,7 @@
   "description": "personal note with map",
   "main": "app.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production PORT=80 pm2 start app.js -i 0",
+    "start": "cross-env NODE_ENV=production PORT=8080 MONGO_HOST=127.0.0.1 pm2 start app.js -i 0",
     "dev": "nodemon app"
   },
   "author": "ISKang",
@@ -27,6 +27,7 @@
     "morgan": "~1.9.1",
     "pm2": "^4.2.1",
     "pug": "^2.0.4",
+    "redis": "^2.8.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
