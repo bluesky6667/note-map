@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { MONGO_ID, MONGO_PASSWORD, MONGO_HOST, NODE_ENV } = process.env;
+const { MONGO_ID, MONGO_PASSWORD, MONGO_HOST, NODE_ENV, DB_NAME } = process.env;
 const MONGO_URL = `mongodb://${MONGO_ID}:${MONGO_PASSWORD}@${MONGO_HOST}:27017/admin`;
 
 module.exports = () => {
@@ -9,7 +9,7 @@ module.exports = () => {
             mongoose.set('debug', true);
         }
         mongoose.connect(MONGO_URL, {
-            dbName: 'notemap',
+            dbName: DB_NAME,
             useNewUrlParser: true,
             useUnifiedTopology: true
         }, (error) => {
