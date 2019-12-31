@@ -10,7 +10,7 @@
         const container = $('#map-container')[0]; //지도를 담을 영역의 DOM 레퍼런스
         const options = { //지도를 생성할 때 필요한 기본 옵션
             center: new kakao.maps.LatLng(37.40164435210446, 127.10813031699776), //지도의 중심좌표.
-            level: 4 //지도의 레벨(확대, 축소 정도)
+            level: 12 //지도의 레벨(확대, 축소 정도)
         };
         const hidingOpacity = 0;
         const map = new kakao.maps.Map(container, options);

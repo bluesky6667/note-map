@@ -9,7 +9,7 @@ module.exports = () => {
             mongoose.set('debug', true);
         }
         mongoose.connect(MONGO_URL, {
-            dbName: 'diary',
+            dbName: 'notemap',
             useNewUrlParser: true,
             useUnifiedTopology: true
         }, (error) => {
