@@ -18,7 +18,7 @@ router.post('/login', async (req, res, next) => {
                 placeLat: { $lte: bounds.neLat, $gte: bounds.swLat },
                 placeLng: { $lte: bounds.neLng, $gte: bounds.swLng }
             }).sort({category: 1, createdAt: -1});
-            res.status(200).json({category: categories, diary: diaries});
+            res.status(200).json({category: categories, diary: diaries, homeBounds: user.homeBounds});
         } else {
             res.redirect(307, '/users');
         }
@@ -56,7 +56,24 @@ router.post('/', async (req, res, next) => {
             placeLat: { $lte: bounds.neLat, $gte: bounds.swLat },
             placeLng: { $lte: bounds.neLng, $gte: bounds.swLng }
         }).sort({category: 1, createdAt: -1});
-        res.status(201).json({category: categories, diary: diaries});
+        const loginUser = await User.findOne({ _id: req.session.userOid });
+        res.status(201).json({category: categories, diary: diaries, homeBounds: loginUser.homeBounds});
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+});
+
+router.put('/bnds', async (req, res, next) => {
+    try {
+        const result = await User.updateOne({
+            _id: req.session.userOid
+        }, {
+            $set: {
+                homeBounds: req.body.homeBounds,
+                lastChgedAt: Date.now()
+            }});
+        res.json(result);
     } catch (err) {
         console.error(err);
         next(err);

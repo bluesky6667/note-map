@@ -61,7 +61,7 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-        const diary = new Schedule({
+        const sched = new Schedule({
             user: req.session.userOid,
             contents: req.body.contents,
             place: req.body.place,
@@ -70,7 +70,7 @@ router.post('/', async (req, res, next) => {
             startTime: req.body.startTime,
             endTime: req.body.endTime
         });
-        const result = await diary.save();
+        const result = await sched.save();
         res.status(201).json(result);
     } catch (err) {
         console.error(err);
@@ -101,9 +101,9 @@ router.put('/', async (req, res, next) => {
 });
 
 router.delete('/', async (req, res, next) => {
-    const diaryId = req.body.diaryId;
+    const schedId = req.body.schedId;
     try {
-        const result = await Schedule.remove({_id: diaryId});
+        const result = await Schedule.remove({_id: schedId});
         res.json({message: 'success', result: result});
     } catch (err) {
         console.error(err);

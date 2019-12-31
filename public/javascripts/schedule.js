@@ -109,6 +109,10 @@
                 this.$note.find('.remove-place').hide();
             }
         }
+        movePlace() {
+            this.map.setCenter(new kakao.maps.LatLng(this.$note.find('input[name=placeLat]').val(), this.$note.find('input[name=placeLng]').val()));
+            kakao.maps.event.trigger(this.map, 'dragend');
+        }
         setSearchingPlace(place = {place: '', placeLat: '', placeLng: ''}) {
             this.$note.find('input[name=temp-place]').val(place.place);
             this.$note.find('input[name=temp-placeLat]').val(place.placeLat);
@@ -240,6 +244,10 @@
                 if (confirm('정말 삭제하시겠습니까?')) {
                     _this.setPlace();
                 }                
+            });
+            $calendar.on('click', '.place-name', function(e) {
+                e.stopPropagation();
+                _this.movePlace();
             });
         }
         buildCalendar(scheds, schedDate) {

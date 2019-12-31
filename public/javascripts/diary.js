@@ -36,7 +36,6 @@
                 this.resizeFn = this.resizeDiaryContents;
 
             }
-            this.open(true);
             if ( this.type === 'list' ) {
                 $('#start-date').datepicker({
                     dateFormat: "yy-mm-dd"
@@ -45,6 +44,8 @@
                     dateFormat: "yy-mm-dd"
                 }).datepicker('setDate', 'today');
                 this.getDiaryList(true);
+            } else {
+                this.open(true);
             }
             this.diaryMgmt[this.id] = this;
             
@@ -53,6 +54,9 @@
                 if (confirm('정말 삭제하시겠습니까?')) {
                     _this.setPlace();
                 }
+            });
+            this.$note.on('click', '.place-name', function(e) {
+                _this.movePlace();
             });
         }
         makeDiaryList() {
@@ -209,10 +213,13 @@
                 url: '/diary',
                 data: this.getSearchParam(),
                 success: function(data) {
-                  _this.makeDiaryPreview(data);
-                  if (init) {
-                    _this.close();
-                  }
+                    if (init) {
+                        _this.open(true);
+                        _this.makeDiaryPreview(data);
+                        _this.close();
+                    } else {
+                        _this.makeDiaryPreview(data);
+                    }                    
                 },
                 error: function(req, stat, err) {
                 }
@@ -224,7 +231,7 @@
                 url: '/diary',
                 data: { diaryId: diaryId },
                 success: function(data) {
-                  _this.setDiaryContents(data[0]);
+                    _this.setDiaryContents(data[0]);
                 },
                 error: function(req, stat, err) {
                 }
@@ -297,12 +304,13 @@
         }
         addLegendItem(category) {
             this.categoryInfo[(category.name === '카테고리 없음' ? 'none' : category.name)] = {color: category.color, checked: true};
+            const legendItem = `<div class="legend-item"><button class="icon-markers view-categories"></button>
+                <input type="checkbox" id="cg-${category.name}" name="legend-category" value="${category.name === '카테고리 없음' ? 'none' : category.name}" checked>
+                <label for="cg-${category.name}" class="legend-category" style="background-color: ${category.color};">${category.name}</label></div>`;
             if ($('.legend-box .legend-item:has(input[value=none])')[0]) {
-                $('.legend-box .legend-item:has(input[value=none])').before(`<div class="legend-item"><input type="checkbox" id="cg-${category.name}" name="legend-category" value="${category.name === '카테고리 없음' ? 'none' : category.name}" checked>
-            <label for="cg-${category.name}" class="legend-category" style="background-color: ${category.color};">${category.name}</label></div>`);
+                $('.legend-box .legend-item:has(input[value=none])').before(legendItem);
             } else {
-                $(`<div class="legend-item"><input type="checkbox" id="cg-${category.name}" name="legend-category" value="${category.name === '카테고리 없음' ? 'none' : category.name}" checked>
-                <label for="cg-${category.name}" class="legend-category" style="background-color: ${category.color};">${category.name}</label></div>`).appendTo('.legend-box');
+                $(legendItem).appendTo('.legend-box');
             }
         }
         removeLegendItem(categoryName) {
@@ -447,6 +455,10 @@
             } else {
                 this.$note.find('.remove-place').hide();
             }
+        }
+        movePlace() {
+            this.map.setCenter(new kakao.maps.LatLng(this.$note.find('input[name=placeLat]').val(), this.$note.find('input[name=placeLng]').val()));
+            kakao.maps.event.trigger(this.map, 'dragend');
         }
         makeDiaryMarker(map, diaries) {
             this.clearMarker();

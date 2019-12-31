@@ -144,6 +144,10 @@ button:focus {
     background-image: url("/images/arrowBack.png");
     background-repeat: no-repeat;
 }
+.icon-markers {
+    background-image: url("/images/markers.png");
+    background-repeat: no-repeat;
+}
 #keyword {
     width: 260px;
 }
@@ -203,6 +207,14 @@ button:focus {
 }
 .legend-box::-webkit-scrollbar-thumb {
 	background-color: #000000;
+}
+.view-categories {
+    width: 21px;
+    height: 21px;
+    background-size: 22px;
+}
+.view-categories+input[type=checkbox] {
+    vertical-align: middle;
 }
 .marker-sched {
     width: 29px;

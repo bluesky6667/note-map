@@ -93,7 +93,10 @@
     opacity: 1;
     cursor: default;
 }
-.legend-category {
+input[name=legend-category] {
+    display: none;
+}
+input:checked+.legend-category {
     opacity: 1;
 }
 .category:checked+label {
@@ -351,4 +354,10 @@ input[type=color]+label {
     text-align: center;
     margin-top: 60%;
     color: #6e6e6e;
+}
+.place-name:hover {
+    cursor: pointer;
+    background-color: #fcffc0;
+    border: 1px solid #fbdb3b;
+    border-radius: 2px;
 }

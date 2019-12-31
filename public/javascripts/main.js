@@ -16,6 +16,8 @@
         const map = new kakao.maps.Map(container, options);
         const infowindow = new kakao.maps.InfoWindow({zIndex:1});
         const ps = new kakao.maps.services.Places();
+        let checkSetLocPressed = null;
+        let pressedTime = 0;
         
         let category = [];              // category info array
         let categoryInfo = {};          // category info obj
@@ -46,7 +48,7 @@
                 //$('.note').hide();
                 $('.note').css('opacity', hidingOpacity);
             });
-    
+
             kakao.maps.event.addListener(map, 'zoom_changed', function(e) {
                 $('.menu-box input').blur();
                 //$('.note').show();
@@ -92,19 +94,35 @@
             });
             $('#diary').on('click', function(e) {
                 endSearchMode();
-                // if ( !diaryList ) {
-                //     diaryList = new Diary({type: 'list'});
-                // } else {
-                    diaryList.open();
-                // }
+                diaryList.open();
             });
             $('#calendar').on('click', function(e) {
                 endSearchMode();
-                // if ( !scheduleSheet ) {
-                //     scheduleSheet = new Schedule({type: 'calendar'});
-                // } else {
-                    scheduleSheet.open();
-                // }
+                scheduleSheet.open();
+            });
+            $('#set-location').on('mousedown', function(e) {
+                checkSetLocPressed = setInterval(() => {
+                    pressedTime += 500;
+                    if (pressedTime >= 1000) {
+                        clearCheckPressed();
+                        if (confirm('현재 화면을 첫 화면으로 저장하시겠습니까?')) {
+                            saveScreenBounds();
+                        }
+                    }
+                }, 500);
+            });
+            $('body').on('mouseup', function(e) {
+                clearCheckPressed();
+            });
+            $('#set-location').on('mouseup', function(e) {
+                clearCheckPressed();
+                if ($('.home-bounds[name=neLat]').val()) {
+                    setHomeBounds();
+                } else {
+                    if (confirm('첫 화면이 설정되어 있지 않습니다. 현재 화면으로 설정하시겠습니까?')) {
+                        saveScreenBounds();
+                    }
+                }
             });
             $('#keyword').on('keyup', function(e) {
                 if ( e.keyCode === 13 && $('#keyword').val().length > 0 ) {
@@ -163,9 +181,9 @@
                 }
                 endSearchMode();
             });
-            $('#map-container').on ('click', '.diary-marker-info .edit-diary', function(e) {
-                new Diary({diaryId: this.dataset.diaryId, diaryList: diaryList, map: map});
-            });
+            // $('#map-container').on ('click', '.diary-marker-info .edit-diary', function(e) {
+            //     new Diary({diaryId: this.dataset.diaryId, diaryList: diaryList, map: map});
+            // });
             // $('#map-container').on ('click', '.diary-marker-info .edit-calendar', function(e) {
             //     scheduleSheet.openSched(this.dataset.schedId);
             // });
@@ -182,10 +200,42 @@
                     }
                 }
             });
+            $('.legend-box').on('click', '.view-categories', function(e) {
+                const category = $(this).next('input[name=legend-category]').val();
+                $.get({
+                    url: '/diary',
+                    data: {
+                        category: [ category ]
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        const diaries = data.filter(function(v) {
+                            return v.place;
+                        });
+                        if ( diaries.length > 0 ) {
+                            const bounds = new kakao.maps.LatLngBounds();
+                            for (let i = 0, len = diaries.length; i < len; i++) {
+                                const diary = diaries[i];
+                                bounds.extend(new kakao.maps.LatLng(diary.placeLat, diary.placeLng));
+                            }
+                            map.setBounds(bounds);
+                            kakao.maps.event.trigger(map, 'dragend');
+                        } else {
+                            alert('해당 카테고리에 위치가 설정된 노트가 없습니다.');
+                        }
+                    },
+                    error: function(req, stat, err) {
+                    }
+                });
+            });
         }
-        function init() {
+        function init(data) {
             category = [];
             categoryInfo = {};
+            if (diaryList) {
+                diaryList.clearMarker();
+                scheduleSheet.clearMarker();
+            }
             diaryList = null;
             scheduleSheet = null;
             if ( diaryMgmt ) {
@@ -199,6 +249,10 @@
             schedMarker = {};
             searchedMarkers = {};
             endSearchMode();
+            $('.home-bounds').each(function(i, v) {
+                $(v).val('');
+            });
+            setInitData(data);
         }
         function login() {
             $.post({
@@ -208,9 +262,7 @@
                     bounds: getCurrBounds(map)
                 },
                 success: function(data) {
-                    init();
-                    setInitData(data);
-                    diaryList.makeDiaryMarker(map, data.diary);
+                    init(data);
                 },
                 error: function(req, stat, err) {
                 }
@@ -224,9 +276,7 @@
                     bounds: getCurrBounds(map)
                 },
                 success: function(data) {
-                    init();
-                    setInitData(data);
-                    diaryList.makeDiaryMarker(map, data.diary);
+                    init(data);
                 },
                 error: function(req, stat, err) {
                 }
@@ -251,11 +301,11 @@
         function placesSearchCB (data, status, pagination) {
             if (status === kakao.maps.services.Status.OK) {
                 const bounds = new kakao.maps.LatLngBounds();
-            for (let i = 0; i < data.length; i++) {
-                displayMarker(data[i]);    
-                bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-            }
-            map.setBounds(bounds);
+                for (let i = 0; i < data.length; i++) {
+                    displayMarker(data[i]);    
+                    bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+                }
+                map.setBounds(bounds);
             } 
         }
         function displayMarker(place) {
@@ -265,14 +315,15 @@
             });
             marker.data = place;
             kakao.maps.event.addListener(marker, 'click', function() {
-                if (infowindow.getMap()) {
-                    infowindow.close();
-                } else {
-                    infowindow.setContent(`<div class="searched-marker-info">${place.place_name}
+                if ( !infowindow.getMap() || 
+                    infowindow.getContent() && $(infowindow.getContent())[0].dataset.placeId != marker.data.id ) {
+                    infowindow.setContent(`<div class="searched-marker-info" data-place-id="${place.id}">${place.place_name}
                         <button class="icon-edit-diary edit-diary" data-place-id="${place.id}"></button>
                         <button class="icon-edit-calendar edit-calendar" data-place-id="${place.id}"></button>
                     </div>`);
                     infowindow.open(map, marker);
+                } else {
+                    infowindow.close();
                 }
             });
             searchedMarkers[place.id] = marker;
@@ -314,6 +365,15 @@
                 diaryList.addLegendItem(cg);
             }
             createCategoryCss(tempCategory);
+            if ( data.homeBounds.neLat ) {
+                const bnds = data.homeBounds;
+                for (let key in bnds) {
+                    $(`.home-bounds[name=${key}]`).val(bnds[key]);
+                }
+                setHomeBounds();
+            } else {
+                diaryList.makeDiaryMarker(map, data.diary);
+            }
         }
         function createCategoryCss(categories) {
             $('style[name=css-category]').empty();
@@ -344,6 +404,42 @@
                 swLat: swBounds.getLat(),
                 swLng: swBounds.getLng()
             };
+        }
+
+        function saveScreenBounds() {
+            const bnds = getCurrBounds(map);
+            $.ajax({
+                url: '/users/bnds',
+                type: 'PUT',
+                data: {
+                    homeBounds: bnds
+                },
+                success: function(data) {
+                    for (let key in bnds) {
+                        $(`.home-bounds[name=${key}]`).val(bnds[key]);
+                    }
+                },
+                error: function(req, stat, err) {
+                }
+            });
+        }
+
+        function setHomeBounds() {
+            const bnds = {};
+            $('.home-bounds').each(function(i, v) {
+                const $v = $(v);
+                bnds[$v.attr('name')] = $v.val();
+            });
+            const ne = new kakao.maps.LatLng(bnds.neLat, bnds.neLng),
+                  sw = new kakao.maps.LatLng(bnds.swLat, bnds.swLng);
+            map.setBounds(new kakao.maps.LatLngBounds(sw, ne));
+            kakao.maps.event.trigger(map, 'dragend');
+        }
+
+        function clearCheckPressed() {
+            clearInterval(checkSetLocPressed);
+            checkSetLocPressed = null;
+            pressedTime = 0;
         }
     }); 
 });

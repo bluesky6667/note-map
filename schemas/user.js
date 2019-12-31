@@ -7,6 +7,15 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
+    homeBounds: {
+        type: Object,
+        default: {
+            neLat: '',
+            neLng: '',
+            swLat: '',
+            swLng: ''
+        }
+    },
     lastLonginAt: {
         type: Date,
         default: Date.now

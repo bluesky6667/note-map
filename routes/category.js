@@ -3,10 +3,6 @@ var Category = require('../schemas/category');
 var Diary = require('../schemas/diary');
 var router = express.Router();
 
-router.get('/', (req, res, next) => {
-
-});
-
 router.post('/', async (req, res, next) => {
     try {
         const category = new Category({
