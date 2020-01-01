@@ -566,10 +566,10 @@
             });
         }
         createCClass(category) {
-            return `color-cate-${escape(category).replace(/\s/gm, '').replace(/%u/gm, '')}`;
+            return `color-cate-${escape(category.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
         }
         createCBClass(category) {
-            return `color-cate-border-${escape(category).replace(/\s/gm, '').replace(/%u/gm, '')}`;
+            return `color-cate-border-${escape(category.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
         }
         removeMarkerById(diaryId) {
             for (let cg in this.diaryMarker) {
