@@ -208,7 +208,6 @@
                         category: [ category ]
                     },
                     success: function(data) {
-                        console.log(data);
                         const diaries = data.filter(function(v) {
                             return v.place;
                         });

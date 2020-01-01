@@ -304,7 +304,7 @@
         }
         addLegendItem(category) {
             this.categoryInfo[(category.name === '카테고리 없음' ? 'none' : category.name)] = {color: category.color, checked: true};
-            const legendItem = `<div class="legend-item"><button class="icon-markers view-categories"></button>
+            const legendItem = `<div class="legend-item"><button class="icon-markers view-categories" title="카테고리 위치로 이동"></button>
                 <input type="checkbox" id="cg-${category.name}" name="legend-category" value="${category.name === '카테고리 없음' ? 'none' : category.name}" checked>
                 <label for="cg-${category.name}" class="legend-category" style="background-color: ${category.color};">${category.name}</label></div>`;
             if ($('.legend-box .legend-item:has(input[value=none])')[0]) {
@@ -316,7 +316,7 @@
         removeLegendItem(categoryName) {
             this.categoryInfo[categoryName] = null;
             delete this.categoryInfo[categoryName];
-            $(`.legend-box .legend-item:has([id=cg-${categoryName}])`).remove();
+            $(`.legend-box .legend-item:has([id='cg-${categoryName}'])`).remove();
         }
         createCategory(category) {
             const _this = this;
@@ -362,14 +362,14 @@
             })
         }
         updateCategory(cmd, category) {
-            if (cmd === 'add' && this.$note.find(`.category[value=${category.name}]`).length === 0) {
+            if (cmd === 'add' && this.$note.find(`.category[value='${category.name}']`).length === 0) {
                 if (this.type === 'list') {
                     this.$note.find('.category-box').append(this.makeCategoryTag('', category));                    
                 } else {
                     this.$note.find('.md-category').before(this.makeCategoryTag('auth-', category, true, true));
                 }
             } else if (cmd === 'delete') {
-                this.$note.find(`.category[value=${category.name}],.category[value=${category.name}]+label`).remove();
+                this.$note.find(`.category[value='${category.name}'],.category[value='${category.name}']+label`).remove();
             }
             if (this.type === 'list') {
                 this.resizeDiaryList();
@@ -420,7 +420,7 @@
         }
         setDiaryContents(contents) {
             for (let i = 0; i < contents.category.length; i++) {
-                this.$diary.find(`input[name=category][value=${contents.category[i]}]`).prop('checked', true);
+                this.$diary.find(`input[name=category][value='${contents.category[i]}']`).prop('checked', true);
             }
             this.setPlace({
                 place: contents.place,
