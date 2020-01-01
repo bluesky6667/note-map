@@ -387,11 +387,11 @@
         }
         function createCClass(category) {
             category.name = category.name === '카테고리 없음' ? 'none' : category.name;
-            return `color-cate-${escape(category.name).replace(/\s/gm, '').replace(/%u/gm, '')}`;
+            return `color-cate-${escape(category.name.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
         }
         function createCBClass(category) {
             category.name = category.name === '카테고리 없음' ? 'none' : category.name;
-            return `color-cate-border-${escape(category.name).replace(/\s/gm, '').replace(/%u/gm, '')}`;
+            return `color-cate-border-${escape(category.name.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
         }
         function getCurrBounds(map) {
             const bounds = map.getBounds();
