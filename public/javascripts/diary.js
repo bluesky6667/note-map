@@ -304,7 +304,7 @@
         }
         addLegendItem(category) {
             this.categoryInfo[(category.name === '카테고리 없음' ? 'none' : category.name)] = {color: category.color, checked: true};
-            const legendItem = `<div class="legend-item"><button class="icon-markers view-categories" title="카테고리 위치로 이동"></button>
+            const legendItem = `<div class="legend-item"><button class="icon-markers view-categories" title="지도에 모두 표시"></button>
                 <input type="checkbox" id="cg-${category.name}" name="legend-category" value="${category.name === '카테고리 없음' ? 'none' : category.name}" checked>
                 <label for="cg-${category.name}" class="legend-category" style="background-color: ${category.color};">${category.name}</label></div>`;
             if ($('.legend-box .legend-item:has(input[value=none])')[0]) {

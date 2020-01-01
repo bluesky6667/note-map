@@ -201,7 +201,8 @@
                 }
             });
             $('.legend-box').on('click', '.view-categories', function(e) {
-                const category = $(this).next('input[name=legend-category]').val();
+                const $legend = $(this).next('input[name=legend-category]');
+                const category = $legend.val();
                 $.get({
                     url: '/diary',
                     data: {
@@ -219,6 +220,9 @@
                             }
                             map.setBounds(bounds);
                             kakao.maps.event.trigger(map, 'dragend');
+                            if (!$legend[0].checked) {
+                                $legend.trigger('click');
+                            }
                         } else {
                             alert('해당 카테고리에 위치가 설정된 노트가 없습니다.');
                         }
