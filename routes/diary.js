@@ -11,7 +11,7 @@ router.get('/', async (req, res, next) => {
                 searchParam.contents = { $regex: reqQuery[key] };
                 break;
             case 'category':
-                if (reqQuery[key].indexOf('카테고리 없음') > -1) {
+                if (reqQuery[key].indexOf('카테고리 없음') > -1 || reqQuery[key].indexOf('none') > -1) {
                     searchParam['$or'] = [ {category: { $size: 0}}, {category: { $in: reqQuery[key] }} ];
                 } else {
                     searchParam[key] = { $in: reqQuery[key] };

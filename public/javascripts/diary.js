@@ -7,9 +7,10 @@
         constructor(options) {
             super(options);
             const _this = this;
+            this.tempCategory = {name: '카테고리 없음', color: '#808080'};
             if ( options ) {
                 this.diaryId = options.diaryId;
-            }            
+            }
             if ( this.type === 'list' ) {
                 this.category = options.category; 
                 this.categoryInfo = options.categoryInfo; 
@@ -106,8 +107,10 @@
                                 <button id="add-category-${timeStamp}" class="icon-add add-btn" title="카테고리 추가"></button></span>`);
             $diary.find(`#${cateColId}+label`).css('background-color', $diary.find(`#${cateColId}`).val());
             $diary.find(`#add-category-${timeStamp}`).on('click', function(e) {
+                const tempCategories = _this.category.slice();
+                tempCategories.push(_this.tempCategory);
                 if ( $(`#${cateNmId}`).val() &&
-                    !(_this.category.find((curr, i) => {return curr.name === $(`#${cateNmId}`).val()})) ) {
+                    !(tempCategories.find((curr, i) => {return curr.name === $(`#${cateNmId}`).val()})) ) {
                     _this.createCategory({name: $(`#${cateNmId}`).val(), color: $(`#${cateColId}`).val()});
                 }
             });
@@ -161,7 +164,7 @@
         makeCategoryTags(prefix = '', unchecked, removable) {
             const categoryList = this.getCategoryList().slice();
             if (this.type === 'list') {
-                categoryList.unshift({name: '카테고리 없음', color: '#808080'});
+                categoryList.unshift(this.tempCategory);
             }
             let categoryTags = '';
             for (let i =0; i < categoryList.length; i++) {
@@ -286,13 +289,14 @@
         }
         deleteDiary(diaryId = this.diaryId) {
             const _this = this;
+            const diaryList = this.type === 'list' ? this : this.diaryList;
             $.ajax({
                 url: '/diary',
                 type: 'DELETE',
                 data: {diaryId: diaryId},
                 success: function(data) {
                     _this.removeMarkerById(diaryId);
-                    _this.diaryList.$note.find('#'+diaryId).remove();
+                    diaryList.$note.find('#'+diaryId).remove();
                     if (_this.diaryId) {
                         _this.closeFn();
                     }
@@ -303,9 +307,10 @@
             });
         }
         addLegendItem(category) {
-            this.categoryInfo[(category.name === '카테고리 없음' ? 'none' : category.name)] = {color: category.color, checked: true};
+            const tempCategory = this.tempCategory;
+            this.categoryInfo[(category.name === tempCategory.name ? 'none' : category.name)] = {color: category.color, checked: true};
             const legendItem = `<div class="legend-item"><button class="icon-markers view-categories" title="지도에 모두 표시"></button>
-                <input type="checkbox" id="cg-${category.name}" name="legend-category" value="${category.name === '카테고리 없음' ? 'none' : category.name}" checked>
+                <input type="checkbox" id="cg-${category.name}" name="legend-category" value="${category.name === tempCategory.name ? 'none' : category.name}" checked>
                 <label for="cg-${category.name}" class="legend-category" style="background-color: ${category.color};">${category.name}</label></div>`;
             if ($('.legend-box .legend-item:has(input[value=none])')[0]) {
                 $('.legend-box .legend-item:has(input[value=none])').before(legendItem);
@@ -371,11 +376,7 @@
             } else if (cmd === 'delete') {
                 this.$note.find(`.category[value='${category.name}'],.category[value='${category.name}']+label`).remove();
             }
-            if (this.type === 'list') {
-                this.resizeDiaryList();
-            } else {
-                this.resizeDiaryContents();
-            }
+            this.resizeFn();
             const tempCategory = this.category.slice();
             tempCategory.push({name: 'none', color: '#808080'});
             this.createCategoryCss(tempCategory);
@@ -467,49 +468,6 @@
                 this.makeMarkerByDiary(map, diary);
             }
         }
-        // makeMarkerByDiary(map, diary) {
-        //     if (diary.place) {
-        //         const category = diary.category;
-        //         let categoryChk = false;
-        //         const marker = new kakao.maps.Marker({
-        //             map: map,
-        //             position: new kakao.maps.LatLng(diary.placeLat, diary.placeLng) 
-        //         });
-        //         marker.data = diary;
-        //         const infoWindow = new kakao.maps.InfoWindow({zIndex:1});
-        //         if (category.length === 0) {
-        //             diaryMarker.none[diary._id] = {marker: marker, info: infoWindow};
-        //             infoWindow.setContent(`<div class="diary-marker-info"><span class="diary-info-category" style="background-color: #808080;">카테고리 없음</span><button class="icon-edit-diary edit-diary" data-diary-id="${diary._id}"></button></div>`);
-        //             categoryChk = categoryInfo.none.checked;
-        //         } else {
-        //             const infoContents = ['<div class="diary-marker-info">'];
-        //             for (let j = 0; j < category.length; j++) {
-        //                 if (!diaryMarker[category[j]]) {
-        //                     diaryMarker[category[j]] = {};
-        //                 }
-        //                 diaryMarker[category[j]][diary._id] = {marker: marker, info: infoWindow};
-        //                 infoContents.push(`<span class="diary-info-category" style="background-color: ${categoryInfo[category].color}">${category}</span>`);
-        //                 if ( categoryInfo[category[j]].checked ) {
-        //                     categoryChk = true;
-        //                 }
-        //             }
-        //             infoContents.push(`<button class="icon-edit-diary edit-diary" data-diary-id="${diary._id}"></button></div>`);
-        //             infoWindow.setContent(infoContents.join(''));
-        //         }
-        //         if (!categoryChk) {
-        //             marker.setMap(null);
-        //         } else {
-        //             infoWindow.open(map, marker);
-        //         }
-        //         kakao.maps.event.addListener(marker, 'click', function() {
-        //             if (infoWindow.getMap()) {
-        //                 infoWindow.close();
-        //             } else {
-        //                 infoWindow.open(map, marker);
-        //             }
-        //         });
-        //     }        
-        // }
         makeMarkerByDiary(map, diary) {
             if (diary.place) {
                 const _this = this;

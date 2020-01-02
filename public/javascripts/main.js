@@ -13,11 +13,13 @@
             level: 12 //지도의 레벨(확대, 축소 정도)
         };
         const hidingOpacity = 0;
+        const tempCategory = {name: '카테고리 없음', color: '#808080'};
+        let checkSetLocPressed = null;
+        let pressedTime = 0;
+
         const map = new kakao.maps.Map(container, options);
         const infowindow = new kakao.maps.InfoWindow({zIndex:1});
         const ps = new kakao.maps.services.Places();
-        let checkSetLocPressed = null;
-        let pressedTime = 0;
         
         let category = [];              // category info array
         let categoryInfo = {};          // category info obj
@@ -356,18 +358,18 @@
             removeSearchedMarker();
             diaryList.clearMarker();     
             $('.legend-box').empty();
-            const tempCategory = category.slice();
-            tempCategory.push({name: '카테고리 없음', color: '#808080'});
-            for (let i = 0; i < tempCategory.length; i++) {
-                const cg = tempCategory[i];
+            const tempCategories = category.slice();
+            tempCategories.push(tempCategory);
+            for (let i = 0; i < tempCategories.length; i++) {
+                const cg = tempCategories[i];
                 let cgName = cg.name;
-                if (cgName === '카테고리 없음') {
+                if (cgName === tempCategory.name) {
                     cgName = 'none';
                 }
                 diaryMarker[cgName] = {};
                 diaryList.addLegendItem(cg);
             }
-            createCategoryCss(tempCategory);
+            createCategoryCss(tempCategories);
             if ( data.homeBounds.neLat ) {
                 const bnds = data.homeBounds;
                 for (let key in bnds) {
@@ -390,11 +392,11 @@
             $('style[name=css-category]').text(cssText.join(' '));
         }
         function createCClass(category) {
-            category.name = category.name === '카테고리 없음' ? 'none' : category.name;
+            category.name = category.name === tempCategory.name ? 'none' : category.name;
             return `color-cate-${escape(category.name.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
         }
         function createCBClass(category) {
-            category.name = category.name === '카테고리 없음' ? 'none' : category.name;
+            category.name = category.name === tempCategory.name ? 'none' : category.name;
             return `color-cate-border-${escape(category.name.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
         }
         function getCurrBounds(map) {
