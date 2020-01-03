@@ -1,6 +1,7 @@
 var express = require('express');
 var Schedule = require('../schemas/schedule');
 var router = express.Router();
+const logger = require('../logger');
 
 router.get('/', async (req, res, next) => {
     const reqQuery = req.query;
@@ -8,13 +9,13 @@ router.get('/', async (req, res, next) => {
     const searchParam = {};
     if ( reqQuery.day ) {
         searchParam.startTime = {
-            $gte: new Date(calendarDate.getFullYear(), calendarDate.getMonth(), calendarDate.getDate(), 0, 0, 0),
-            $lt: new Date(calendarDate.getFullYear(), calendarDate.getMonth()+1, calendarDate.getDate()+1, 0, 0, 0)
+            $gte: new Date(Date.UTC(calendarDate.getFullYear(), calendarDate.getMonth(), calendarDate.getDate(), -9, 0, 0)),
+            $lt: new Date(Date.UTC(calendarDate.getFullYear(), calendarDate.getMonth(), calendarDate.getDate()+1, -9, 0, 0))
         };
     } else {
         searchParam.startTime = {
-            $gte: new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1),
-            $lt: new Date(calendarDate.getFullYear(), calendarDate.getMonth()+1, 1)
+            $gte: new Date(Date.UTC(calendarDate.getFullYear(), calendarDate.getMonth(), 1)),
+            $lt: new Date(Date.UTC(calendarDate.getFullYear(), calendarDate.getMonth()+1, 1))
         };
     }
     searchParam.user = req.session.userOid;
@@ -22,7 +23,7 @@ router.get('/', async (req, res, next) => {
         const scheds = await Schedule.find(searchParam, {user: 0}).sort({startTime: 1, endTime: 1});
         res.json(scheds);
     } catch (err) {
-        console.error(err);
+	logger.error(err.message);
         next(err);
     }
     
@@ -40,7 +41,7 @@ router.get('/marker', async (req, res, next) => {
         }, {user: 0});
         res.json({sched: schedList});
     } catch (err) {
-        console.error(err);
+	logger.error(err.message);
         next(err);
     }
 });
@@ -54,7 +55,7 @@ router.get('/:id', async (req, res, next) => {
         const sched = await Schedule.findOne(searchParam, {user: 0});
         res.json(sched);
     } catch (err) {
-        console.error(err);
+        logger.error(err.message);
         next(err);
     }
 });
@@ -73,7 +74,7 @@ router.post('/', async (req, res, next) => {
         const result = await sched.save();
         res.status(201).json(result);
     } catch (err) {
-        console.error(err);
+        logger.error(err.message);
         next(err);
     }
 });
@@ -95,7 +96,7 @@ router.put('/', async (req, res, next) => {
             }});
         res.json(result);
     } catch (err) {
-        console.error(err);
+        logger.error(err.message);
         next(err);
     }
 });
@@ -106,7 +107,7 @@ router.delete('/', async (req, res, next) => {
         const result = await Schedule.remove({_id: schedId});
         res.json({message: 'success', result: result});
     } catch (err) {
-        console.error(err);
+        logger.error(err.message);
         next(err);
     }
 });

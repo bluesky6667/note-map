@@ -1,6 +1,7 @@
 var express = require('express');
 var Diary = require('../schemas/diary');
 var router = express.Router();
+const logger = require('../logger');
 
 router.get('/', async (req, res, next) => {
     const reqQuery = req.query;
@@ -21,13 +22,15 @@ router.get('/', async (req, res, next) => {
                 if (!searchParam.createdAt) {
                     searchParam.createdAt = {};    
                 }
-                searchParam.createdAt.$gte = reqQuery[key];
+		const startDate = new Date(reqQuery[key]);
+		searchParam.createdAt.$gte = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), startDate.getTimezoneOffset()/60-9));
                 break;
             case 'endDate':
                 if (!searchParam.createdAt) {
                     searchParam.createdAt = {};    
                 }
-                searchParam.createdAt.$lte = reqQuery[key]+' 23:59:59';
+		const endDate = new Date(reqQuery[key]+' 23:59:59');
+                searchParam.createdAt.$lte = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), endDate.getHours()+endDate.getTimezoneOffset()/60-9, endDate.getMinutes(), endDate.getSeconds()));
                 break;
             case 'diaryId':
                 searchParam._id = reqQuery[key];
@@ -55,7 +58,7 @@ router.post('/', async (req, res, next) => {
         const result = await diary.save();
         res.status(201).json(result);
     } catch (err) {
-        console.error(err);
+        logger.error(err.message);
         next(err);
     }
 });
@@ -76,7 +79,7 @@ router.put('/', async (req, res, next) => {
             }});
         res.json(result);
     } catch (err) {
-        console.error(err);
+        logger.error(err.message);
         next(err);
     }
 });
@@ -87,7 +90,7 @@ router.delete('/', async (req, res, next) => {
         const result = await Diary.remove({_id: diaryId});
         res.json({message: 'success', result: result});
     } catch (err) {
-        console.error(err);
+        logger.error(err.message);
         next(err);
     }
 });
@@ -102,7 +105,7 @@ router.get('/marker', async (req, res, next) => {
         }, {user: 0}).sort({category: 1, createdAt: -1});
         res.json({diary: diaryList});
     } catch (err) {
-        console.error(err);
+        logger.error(err.message);
         next(err);
     }
 });

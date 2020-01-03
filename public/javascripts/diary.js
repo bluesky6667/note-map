@@ -38,10 +38,10 @@
 
             }
             if ( this.type === 'list' ) {
-                $('#start-date').datepicker({
+                this.$note.find('#start-date').datepicker({
                     dateFormat: "yy-mm-dd"
                 }).datepicker('setDate', '-1Y');
-                $('#end-date').datepicker({
+                this.$note.find('#end-date').datepicker({
                     dateFormat: "yy-mm-dd"
                 }).datepicker('setDate', 'today');
                 this.getDiaryList(true);

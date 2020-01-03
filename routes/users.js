@@ -21,7 +21,7 @@ router.post('/login', async (req, res, next) => {
             res.status(200).json({category: categories, diary: diaries, homeBounds: user.homeBounds});
         } else {
             res.redirect(307, '/users');
-        }
+        }	
     } catch(err) {
         console.error(err);
         next(err);

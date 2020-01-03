@@ -30,7 +30,7 @@ app.set('port', process.env.PORT || 8080);
 if ( process.env.NODE_ENV === 'production' ) {
     app.use(morgan('combined'));
     app.use(helmet());
-    app.use(hpp({ checkQuery: false, checkBody: false }));
+    app.use(hpp());
 } else {
     app.use(morgan('dev'));
 }
@@ -40,7 +40,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-
 const redisClient = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
 redisClient.auth(process.env.REDIS_PASSWORD, err => {
     if (err) logger.error('redis connect err ', err);
