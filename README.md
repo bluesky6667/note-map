@@ -1,2 +1,2 @@
-# note-map
-simple diary
+# Note-map
+Simple diary
