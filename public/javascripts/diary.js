@@ -502,7 +502,7 @@
                 }
                 $('#map-container').off('click', `.marker-diary[data-diary-id=${diary._id}]`);
                 $('#map-container').on('click', `.marker-diary[data-diary-id=${diary._id}]`, function(e) {
-                    new Diary({diaryId: this.dataset.diaryId, diaryList: _this, map: _this.map});
+                    new Diary({diaryId: this.dataset.diaryId, diaryList: (_this.type == 'list' ? _this : _this.diaryList), map: _this.map});
                 });
             }        
         }
