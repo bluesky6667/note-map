@@ -392,12 +392,12 @@
             $('style[name=css-category]').text(cssText.join(' '));
         }
         function createCClass(category) {
-            category.name = category.name === tempCategory.name ? 'none' : category.name;
-            return `color-cate-${escape(category.name.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
+            const categoryName = category.name === tempCategory.name ? 'none' : category.name;
+            return `color-cate-${escape(categoryName.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
         }
         function createCBClass(category) {
-            category.name = category.name === tempCategory.name ? 'none' : category.name;
-            return `color-cate-border-${escape(category.name.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
+	    const categoryName = category.name === tempCategory.name ? 'none' : category.name;
+            return `color-cate-border-${escape(categoryName.replace(/\s/gm, '')).replace(/%u/gm, '')}`;
         }
         function getCurrBounds(map) {
             const bounds = map.getBounds();
