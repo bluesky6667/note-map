@@ -19,3 +19,5 @@
 3. 추가 버튼( <img width="15" src="./public/images/plus.png" /> )을 클릭하여 새 스케줄을 작성합니다.
 4. 장소 등록을 원할 시, 검색 버튼( <img width="15" src="./public/images/search.png" /> )을 클릭하여 장소를 검색합니다.
 5. 스케줄 작성 버튼( <img width="15" src="./public/images/edit-calendar.png" /> )을 클릭하여 장소를 등록합니다.
+
+- 종료된 지 30분이 지난 스케줄은 지도에 표시하지 않습니다.
