@@ -175,7 +175,7 @@
                     placeLat: placeData.y,
                     placeLng: placeData.x
                 };
-                if (scheduleSheet.$note.find('.sched-detail-info')[0]) {
+                if ($('.note.calendar')[0] && scheduleSheet.$note.find('.sched-detail-info')[0]) {
                     scheduleSheet.setPlace(placeInfo);
                 } else {
                     scheduleSheet.shortCutWriteSched(placeInfo);

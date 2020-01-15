@@ -14,8 +14,8 @@ router.get('/', async (req, res, next) => {
         };
     } else {
         searchParam.startTime = {
-            $gte: new Date(Date.UTC(calendarDate.getFullYear(), calendarDate.getMonth(), 1)),
-            $lt: new Date(Date.UTC(calendarDate.getFullYear(), calendarDate.getMonth()+1, 1))
+            $gte: new Date(Date.UTC(calendarDate.getFullYear(), calendarDate.getMonth(), 1, -9)),
+            $lt: new Date(Date.UTC(calendarDate.getFullYear(), calendarDate.getMonth()+1, 1, -9))
         };
     }
     searchParam.user = req.session.userOid;
@@ -35,7 +35,7 @@ router.get('/marker', async (req, res, next) => {
     try {
         const schedList = await Schedule.find({
             user: req.session.userOid,
-            startTime: { $gte: date },
+            endTime: { $gte: date },
             placeLat: { $lte: bounds.neLat, $gte: bounds.swLat },
             placeLng: { $lte: bounds.neLng, $gte: bounds.swLng }
         }, {user: 0});

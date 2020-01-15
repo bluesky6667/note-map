@@ -62,13 +62,14 @@
                                 _this.makeSchedInfoFrame();
                                 _this.setSchedInfo(sched);
                             });
-                        } else if (!$('.detail-view')[0]) {
+                        } else if ( !(_this.compareDate(_this.calendarDate, schedDate, true) && $('.detail-view')[0]) ) {
                             $(`.date-num:contains(${date})`).filter(function() {
                                 return $(this).text() == date;
                             }).closest('.date-container').trigger('click');
                             _this.makeSchedInfoFrame();
                             _this.setSchedInfo(sched);
                         } else {
+			    _this.makeSchedInfoFrame();
                             _this.setSchedInfo(sched);
                         }
                     },
@@ -87,6 +88,7 @@
                 && date.getMonth() === another.getMonth();
         }
         setSchedInfo(sched) {
+	    this.$note.find('.sched-detail-footer .delete-sched').show();
             const $schedDetailInfo = this.$note.find('.sched-detail-info');
             $schedDetailInfo.find('input[name=schedId]').val(sched._id);
             $schedDetailInfo.find('.sched-contents').val(sched.contents);
@@ -202,6 +204,9 @@
             </table>`).appendTo($calendar); 
             $calendar.on('click', '.date-container', function(e) {
                 if ($(this).find('.date-head')[0] && !$(this).hasClass('detail-view')) {
+		    _this.$note.find('.sched-detail').empty();
+                    $('.detail-view').removeClass('detail-view');
+                    _this.$note.find('tr, td').show();
                     _this.calendarDate.setDate($(this).find('.date-num').text())
                     $(this).closest('tr').siblings().hide();
                     $(this).closest('td').siblings().hide();
@@ -209,8 +214,6 @@
 
                     if ($(e.target).is('.sched-preview')) {
                         _this.makeSchedInfoFrame(e.target.dataset.schedId);
-                    } else if ($(this).find('.sched-preview')[0]) {
-                        _this.makeSchedInfoFrame($(this).find('.sched-preview')[0].dataset.schedId);
                     } else {
                         _this.msgNoSched();
                     }
