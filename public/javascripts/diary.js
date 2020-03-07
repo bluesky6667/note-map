@@ -483,13 +483,12 @@
                 } else {
                     const infoContents = ['<div class="diary-marker-info">'];
                     for (let j = 0; j < category.length; j++) {
-                        const categoryName =category[j];
-                        if (!this.diaryMarker[categoryName]) {
-                            this.diaryMarker[categoryName] = {};
+                        if (!this.diaryMarker[category[j]]) {
+                            this.diaryMarker[category[j]] = {};
                         }
-                        this.diaryMarker[categoryName][diary._id] = {marker: marker, info: infoWindow};
-                        infoContents.push(`<span class="diary-info-category" style="background-color: ${this.categoryInfo[categoryName].color}">${categoryName}</span>`);
-                        if ( this.categoryInfo[categoryName].checked ) {
+                        this.diaryMarker[category[j]][diary._id] = {marker: marker, info: infoWindow};
+                        infoContents.push(`<span class="diary-info-category" style="background-color: ${this.categoryInfo[category].color}">${category}</span>`);
+                        if ( this.categoryInfo[category[j]].checked ) {
                             categoryChk = true;
                         }
                     }
