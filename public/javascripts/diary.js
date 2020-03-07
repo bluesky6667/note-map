@@ -553,6 +553,7 @@
         }
         openMarker(map, marker, info) {
             marker.setMap(map);
+            
             // info.open(map, marker);
         }
         closeMarker(marker, info) {
