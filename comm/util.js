@@ -11,4 +11,5 @@ const aw = asyncFn => {
     });
 }
 
+const temp = 0;
 module.exports = aw;
